@@ -17,21 +17,27 @@ def edit_distance(s1, s2):
     
     return tbl[i,j]
 
-def spellChecker(words, dict):
-    suggestions = 0
+def spellChecker(words, wordsDict, total):
     for i in words:
-        print()
+        if i in wordsDict: # check if word is misspelt
+            continue
+        distances = {}
+        for j in wordsDict: # compute edit distance for each word in dictionary
+            distances[j] = (edit_distance(i,j), wordsDict[j])
+        
+        # output the suggestions
+        suggestions = dict(sorted(distances.items(), key=lambda item: item[1][0])[:total])
+        print(f"Suggestions for '{i}': {suggestions}")
 
 
 def main():
 
-    print(edit_distance("Hello world!", "HalloWorld")) # returns 4
-
     dictionary = re.findall(r'\w+', open('dictionary.txt').read().lower())
     misspelled = re.findall(r'\w+', open('misspelled.txt').read().lower())
-    dictionaryCount = collections.Counter(dictionary)
-    # print(dictionaryCount)
-    print(misspelled)
+    dictionaryCount = dict(collections.Counter(dictionary))
+
+    spellChecker(misspelled, dictionaryCount, int(sys.argv[1]))
+
 
 if __name__ =='__main__':
     main()
