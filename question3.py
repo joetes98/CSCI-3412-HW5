@@ -18,13 +18,13 @@ def edit_distance(s1, s2):
     return tbl[i,j]
 
 
-def spellChecker(words, wordsDict, total, max_distance):
+def spellChecker(words, wordsDict, total, max_distance, min_length):
     for i in words:
         if i not in wordsDict: # check whether word is misspelt     
             distances = {}
 
             for j in wordsDict:
-                if len(j) >= 4: # check minimum word length
+                if len(j) >= min_length: # check minimum word length
                     # compute edit distance for each word in dictionary
                     if edit_distance(i,j) <= max_distance: # only add to suggestions if less than equal to the max edit distance
                         distances[j] = (edit_distance(i,j), wordsDict[j])
@@ -38,7 +38,7 @@ def main():
 
     misspelled = re.findall(r'\w+', open('misspelled.txt').read().lower())
     dictionaryCount = dict(collections.Counter(re.findall(r'\w+', open('dictionary.txt').read().lower())))
-    spellChecker(misspelled, dictionaryCount, int(sys.argv[1]), int(sys.argv[2]))
+    spellChecker(misspelled, dictionaryCount, int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
 
 if __name__ =='__main__':
     main()
